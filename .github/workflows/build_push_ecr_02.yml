@@ -51,7 +51,7 @@ jobs:
         with:
           repository: EunOrganization/gha-ci-test
           token: ${{ secrets.ACTION_TOKEN }}
-          path: gha-ci-test
+          path: manifest
           fetch-depth: 1
 
       - name: update manifest file image tag
@@ -59,7 +59,7 @@ jobs:
           wget -q https://github.com/mikefarah/yq/releases/download/v4.27.5/yq_linux_amd64
           sudo mv yq_linux_amd64 /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
-          yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'gha-ci-test/manifest/deploy-time.yaml'
+          yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'deploy-time.yaml'
 
       - name: setup Repository
         working-directory: manifest
