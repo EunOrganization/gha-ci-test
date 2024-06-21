@@ -54,8 +54,12 @@ jobs:
           path: manifest
           fetch-depth: 1
 
-      - name: update manifest file image tag
-      
+      - name: Check files in manifest directory
+        run: |
+          echo "Listing files in the manifest directory:"
+          ls -al manifest
+          
+      - name: update manifest file image tag      
         run: |
           wget -q https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
           sudo mv yq_linux_amd64 /usr/local/bin/yq
