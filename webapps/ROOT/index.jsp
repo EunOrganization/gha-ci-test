@@ -2,7 +2,7 @@
 <html>
     <head><title>Dockerfile TEST</title></head>
     <body>
-        Dockerfile TEST
+        Fist CI TEST
         
         now_time : <%= new java.util.Date() %>
     </body>
