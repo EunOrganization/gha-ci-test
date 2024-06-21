@@ -32,6 +32,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push Docker image to ECR
+        id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
@@ -39,6 +40,40 @@ jobs:
         run: |
           # Build the Docker image
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-
           # Push the Docker image to ECR
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          
+  deploy:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: fetch manifest repository
+        uses: actions/checkout@v4
+        with:
+          repository: EunOrganization/manifest-repository
+          token: ${{ secrets.ACTION_TOKEN }}
+          path: manifest
+          fetch-depth: 1
+
+      - name: update manifest file image tag
+        run: |
+          wget -q https://github.com/mikefarah/yq/releases/download/v4.27.5/yq_linux_amd64
+          sudo mv yq_linux_amd64 /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+          yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'manifest/deploy-time.yaml.yaml'
+
+      - name: setup Repository
+        working-directory: manifest
+        run: |
+          git fetch origin main
+          git config --global user.name "EunOrganization"
+          git config --global user.email "dodmsqo0406@gmail.com"
+          git remote set-url --push origin https://github.com/EunOrganization/manifest-repository.git
+          git checkout -b release-${{ github.sha }}
+
+      - name: commit
+        working-directory: manifest
+        run: |
+          git add .
+          git commit -m "Update image tags for time-app"
+          git push origin main
