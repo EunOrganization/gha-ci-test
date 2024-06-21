@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: time
+  name: deploy-time
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: time
+  template:
+    metadata:
+      labels:
+        app: time
+    spec:
+      containers:
+      - name: time-container
+        image: 058264152241.dkr.ecr.ap-northeast-2.amazonaws.com/juju:latest
+        ports:
+        - containerPort: 3000
