@@ -42,6 +42,7 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           # Push the Docker image to ECR
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
           
   deploy:
     needs: [ build ]
@@ -60,7 +61,7 @@ jobs:
           wget -q https://github.com/mikefarah/yq/releases/download/v4.27.5/yq_linux_amd64
           sudo mv yq_linux_amd64 /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
-          yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'manifest/deploy-time.yaml'
+          yq e -i '.spec.template.spec.containers[0].image = "${{ needs.build.outputs.image }}"' 'manifest/deploy-time.yaml'
 
       - name: setup Repository
         working-directory: manifest
