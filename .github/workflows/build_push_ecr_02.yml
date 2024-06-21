@@ -51,7 +51,7 @@ jobs:
         with:
           repository: EunOrganization/gha-ci-test
           token: ${{ secrets.ACTION_TOKEN }}
-          path: manifest
+          path: gha-ci-test
           fetch-depth: 1
 
       - name: update manifest file image tag
