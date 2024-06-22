@@ -76,7 +76,7 @@ jobs:
           yq eval -i '.spec.template.spec.containers[0].image = "058264152241.dkr.ecr.ap-northeast-2.amazonaws.com/juju:${{ steps.get-image-tag.outputs.image_tag }}"' deploy-time.yaml
 
       - name: setup Repository
-        working-directory: manifest
+        working-directory: manifest/manifest
         run: |
           pwd
           git fetch origin main
@@ -86,7 +86,7 @@ jobs:
           git checkout -b release-${{ github.sha }}
 
       - name: commit
-        working-directory: manifest
+        working-directory: manifest/manifest
         run: |
           pwd
           git add .
