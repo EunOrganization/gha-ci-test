@@ -57,7 +57,9 @@ jobs:
       - name: Check files in manifest directory
         run: |
           echo "Listing files in the manifest directory:"
-          ls -al manifest/manifest/
+          cd manifest
+          ls -al manifest
+          pwd
           
       - name: update manifest file image tag      
         run: |
