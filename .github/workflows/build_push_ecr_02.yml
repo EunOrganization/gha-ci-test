@@ -41,7 +41,7 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           # Push the Docker image to ECR
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
   deploy:
     needs: [ build ]
@@ -69,7 +69,7 @@ jobs:
           sudo chmod +x /usr/local/bin/yq
           cd manifest/manifest
           ls -l
-          yq e -i '.spec.template.spec.containers[0].image = "${{ steps.build-image.outputs.image }}"' 'deploy-time.yaml'
+          yq e -i '.spec.template.spec.containers[0].image = "${{ steps.build-image.outputs.image }}"' ./deploy-time.yaml
 
       - name: setup Repository
         working-directory: manifest/manifest
@@ -77,12 +77,12 @@ jobs:
           git fetch origin main
           git config --global user.name "BaeEunaee"
           git config --global user.email "dmsdoqo0406@gmail.com"
-          git remote set-url --push origin https://github.com/EunOrganization/manifest-repository.git
+          git remote set-url --push origin https://github.com/EunOrganization/manifest-repository
           git checkout -b release-${{ github.sha }}
 
       - name: commit
         working-directory: manifest/manifest
         run: |
           git add .
-          git commit -m "Update image tags to $image"
+          git commit -m "Update image tags to ${{ env.IMAGE_TAG}}"
           git push origin main
