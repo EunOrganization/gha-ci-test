@@ -49,11 +49,6 @@ jobs:
     steps:
       - name: fetch manifest repository
         uses: actions/checkout@v4
-        with:
-          repository: EunOrganization/manifest-repository
-          token: ${{ secrets.ACTION_TOKEN }}
-          path: manifest
-          fetch-depth: 1
 
       - name: Check files in manifest directory
         run: |
