@@ -67,18 +67,12 @@ jobs:
           wget -q https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
           sudo mv yq_linux_amd64 /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
-          yq --version
-          pwd
-          ls -al .
-          ls -al manifest
           cd manifest/manifest
-          ls -al
-          yq eval -i '.spec.template.spec.containers[0].image = "058264152241.dkr.ecr.ap-northeast-2.amazonaws.com/juju:${{ steps.get-image-tag.outputs.image_tag }}"' deploy-time.yaml
+          yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'deploy-time.yaml'
 
       - name: setup Repository
         working-directory: manifest/manifest
         run: |
-          pwd
           git fetch origin main
           git config --global user.name "BaeEunaee"
           git config --global user.email "dmsdoqo0406@gmail.com"
@@ -88,7 +82,6 @@ jobs:
       - name: commit
         working-directory: manifest/manifest
         run: |
-          pwd
           git add .
           git commit -m "Update image tags for time-app"
           git push origin main
