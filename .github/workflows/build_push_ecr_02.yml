@@ -63,11 +63,16 @@ jobs:
           pwd
           
       - name: update manifest file image tag      
-        uses: mikefarah/yq@v4.44.1
-        with:
-          cmd: yq -i '.spec.template.spec.containers.[0].image = "${{ steps.build-image.outputs.image }}"' deploy-time.yaml
+        run: |
+          wget -q https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
+          sudo mv yq_linux_amd64 /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+          cd manifest/manifest
+          yq e -i '.spec.template.spec.containers[0].image = "${{ steps.build-image.outputs.image }}"' 'deploy-time.yaml'
 
       - name: setup Repository
+        env:
+          token: ${{ secrets.ACTION_TOKEN }}
         working-directory: manifest/manifest
         run: |
           git fetch origin main
@@ -77,6 +82,8 @@ jobs:
           git checkout -b release-${{ github.sha }}
 
       - name: commit
+        env:
+          token: ${{ secrets.ACTION_TOKEN }}
         working-directory: manifest/manifest
         run: |
           git add .
