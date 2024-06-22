@@ -41,7 +41,8 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           # Push the Docker image to ECR
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
   deploy:
     needs: [ build ]
     runs-on: ubuntu-latest
@@ -66,16 +67,11 @@ jobs:
           wget -q https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
           sudo mv yq_linux_amd64 /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
-          yq --version
-          pwd
-          ls -al .
-          ls -al manifest
           cd manifest/manifest
-          ls -al
-          yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'deploy-time.yaml'
+          yq e -i '.spec.template.spec.containers[0].image = "${{ steps.build-image.outputs.image }}"' 'deploy-time.yaml'
 
       - name: setup Repository
-        working-directory: manifest
+        working-directory: manifest/manifest
         run: |
           git fetch origin main
           git config --global user.name "BaeEunaee"
@@ -84,7 +80,7 @@ jobs:
           git checkout -b release-${{ github.sha }}
 
       - name: commit
-        working-directory: manifest
+        working-directory: manifest/manifest
         run: |
           git add .
           git commit -m "Update image tags for time-app"
