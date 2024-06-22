@@ -69,7 +69,7 @@ jobs:
           sudo chmod +x /usr/local/bin/yq
           cd manifest/manifest
           ls -l
-          yq e -i '.spec.template.spec.containers[0].image = "${{ steps.build-image.env.image }}"' 'deploy-time.yaml'
+          yq e -i '.spec.template.spec.containers[0].image = env(image)' 'deploy-time.yaml'
 
       - name: setup Repository
         working-directory: manifest/manifest
@@ -84,5 +84,5 @@ jobs:
         working-directory: manifest/manifest
         run: |
           git add .
-          git commit -m "Update image tags for time-app"
+          git commit -m "Update image tags to $image"
           git push origin main
