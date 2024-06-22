@@ -68,7 +68,10 @@ jobs:
           sudo chmod +x /usr/local/bin/yq
           yq --version
           pwd
-          yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'manifest/deploy-time.yaml'
+          ls -al .
+          ls -al manifest
+          cd manifest
+          yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'deploy-time.yaml'
 
       - name: setup Repository
         working-directory: manifest
