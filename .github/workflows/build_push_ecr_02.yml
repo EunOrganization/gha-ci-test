@@ -70,7 +70,7 @@ jobs:
           pwd
           ls -al .
           ls -al manifest
-          cd manifest
+          cd manifest/manifest
           ls -al
           yq e -i '.spec.template.spec.containers[0].image |= "${{ steps.build-image.outputs.image }}"' 'deploy-time.yaml'
 
