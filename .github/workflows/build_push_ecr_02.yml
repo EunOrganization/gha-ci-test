@@ -69,7 +69,7 @@ jobs:
         run: |
           ls -l manifest/manifest
           cd manifest/manifest
-          cat manifest/manifest/deploy-time.yaml
+          cat deploy-time.yaml
 
       - name: update manifest file image tag
         run: |
