@@ -82,7 +82,7 @@ jobs:
           git --version
           
       - name: setup Repository
-        working-directory: manifest
+        working-directory: manifest/manifest
         run: |
           git fetch origin main
           git config --global user.name "BaeEunaee"
@@ -93,7 +93,7 @@ jobs:
           git checkout -b release-${{ github.sha }}
 
       - name: commit
-        working-directory: manifest
+        working-directory: manifest/manifest
         run: |
           git add .
           git commit -m "Update image tags for ${{ github.sha }}"
