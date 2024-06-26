@@ -13,7 +13,7 @@ env:
   ECR_REPOSITORY: juju
   
 jobs:
-  build:
+  build_deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,10 +44,6 @@ jobs:
       - name: Check image variable
         run: echo "The Docker image is ${{ env.image }}"
 
-  deploy:
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    steps:
       - name: fetch manifest repository
         uses: actions/checkout@v4
         with:
