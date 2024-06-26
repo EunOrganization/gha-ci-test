@@ -68,8 +68,8 @@ jobs:
       - name: verify manifest file path and contents
         run: |
           ls -l manifest/manifest
-          cat manifest/manifest
-          cd manifest/manifest/deploy-time.yaml
+          cd manifest/manifest
+          cat manifest/manifest/deploy-time.yaml
 
       - name: update manifest file image tag
         run: |
