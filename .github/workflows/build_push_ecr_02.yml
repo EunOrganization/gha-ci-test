@@ -80,8 +80,6 @@ jobs:
       - name: verify Git setup
         run: |
           git --version
-          git config --global --get user.name
-          git config --global --get user.email
           
       - name: setup Repository
         working-directory: manifest
@@ -89,6 +87,8 @@ jobs:
           git fetch origin main
           git config --global user.name "BaeEunaee"
           git config --global user.email "dmsdoqo0406@gmail.com"
+          git config --global --get user.name
+          git config --global --get user.email
           git remote set-url --push origin https://github.com/EunOrganization/manifest-repository.git
           git checkout -b release-${{ github.sha }}
 
