@@ -40,7 +40,7 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "IMAGE_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}" >> $GITHUB_ENV
-          echo "IMAGE_URL=${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          echo "IMAGE_URL=${{ env.IMAGE_URL }}"
 
   deploy:
     needs: [ build ]
@@ -73,8 +73,9 @@ jobs:
       - name: update manifest file image tag
         run: |
           cd manifest/manifest
+          IMAGE_URL=$(cat $GITHUB_ENV | grep IMAGE_URL | cut -d'=' -f2)
           echo "Image URL is $IMAGE_URL"
-          yq e -i '.spec.template.spec.containers.[0].image = \"${{ env.IMAGE_URL }}\"' deploy-time.yaml
+          yq e -i '.spec.template.spec.containers.[0].image = "${{ env.IMAGE_URL }}"' deploy-time.yaml
           cat deploy-time.yaml
 
       - name: verify Git setup
