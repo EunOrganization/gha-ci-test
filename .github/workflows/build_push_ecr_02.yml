@@ -15,7 +15,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    outputs:
+      image_url: ${{ steps.build-image.outputs.image }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -68,8 +69,8 @@ jobs:
       - name: update manifest file image tag
         run: |
           cd manifest/manifest
-          echo "Image URL is $image"
-          yq e -i '.spec.template.spec.containers.[0].image = "${{ env.image }}"' deploy-time.yaml
+          echo "Image URL is ${{ needs.build.outputs.image_url }}"
+          yq e -i '.spec.template.spec.containers.[0].image = "${{ needs.build.outputs.image_url }}"' deploy-time.yaml
           cat deploy-time.yaml
 
       - name: verify Git setup
