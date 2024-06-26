@@ -82,6 +82,7 @@ jobs:
       - name: setup Repository
         working-directory: manifest/manifest
         run: |
+          pwd
           git fetch origin main
           git config --global user.name "BaeEunaee"
           git config --global user.email "dmsdoqo0406@gmail.com"
@@ -93,6 +94,7 @@ jobs:
       - name: commit
         working-directory: manifest/manifest
         run: |
+          pwd
           git add .
           git commit -m "Update image tags for ${{ github.sha }}"
           git push origin main
