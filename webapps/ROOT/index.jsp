@@ -2,7 +2,7 @@
 <html>
     <head><title>Dockerfile TEST</title></head>
     <body>
-        Third CI/CD Project TEST
+        최종 진짜 최종 진짜 최종 CI/CD Project TEST
         
         now_time : <%= new java.util.Date() %>
     </body>
