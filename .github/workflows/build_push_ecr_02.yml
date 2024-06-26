@@ -44,7 +44,11 @@ jobs:
           
       - name: Load image variable
         run: echo "image=${{ env.image }}" >> $GITHUB_ENV
-        
+
+  deploy:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
       - name: fetch manifest repository
         uses: actions/checkout@v4
         with:
