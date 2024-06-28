@@ -2,7 +2,7 @@
 <html>
     <head><title>Dockerfile TEST</title></head>
     <body>
-        최종 진짜 최종 진짜 최종 CI/CD Project TEST
+        ArgoCD-Slack 연동 TEST
         
         now_time : <%= new java.util.Date() %>
     </body>
