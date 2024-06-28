@@ -45,10 +45,6 @@ jobs:
       - name: Load image variable
         run: echo "image=${{ env.image }}" >> $GITHUB_ENV
 
-  deploy:
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    steps:
       - name: fetch manifest repository
         uses: actions/checkout@v4
         with:
@@ -62,24 +58,13 @@ jobs:
           wget -q https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
           sudo mv yq_linux_amd64 /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
-          yq --version
-
-      - name: verify manifest file path and contents
-        run: |
-          ls -l manifest/manifest
-          cd manifest/manifest
-          cat deploy-time.yaml
 
       - name: update manifest file image tag
         run: |
           cd manifest/manifest
-          echo "Image URL is ${{ needs.build.outputs.image_url }}"
-          yq e -i '.spec.template.spec.containers.[0].image = "${{ needs.build.outputs.image_url }}"' deploy-time.yaml
+          echo "Image URL is $image"
+          yq e -i '.spec.template.spec.containers.[0].image = "${{ env.image }}"' deploy-time.yaml
           cat deploy-time.yaml
-
-      - name: verify Git setup
-        run: |
-          git --version
           
       - name: setup Repository
         working-directory: manifest/manifest
