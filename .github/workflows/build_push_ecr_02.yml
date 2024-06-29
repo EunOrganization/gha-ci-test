@@ -27,9 +27,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ECR_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Log in to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+#      - name: Log in to Amazon ECR
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v2
         
       - name: Build, tag, and push Docker image to ECR
         id: build-image
@@ -44,16 +44,6 @@ jobs:
           
       - name: Load image variable
         run: echo "image=${{ env.image }}" >> $GITHUB_ENV
-
-      - name: send slack message
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          if_mention: failure,cancelled
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always() 
         
       - name: fetch manifest repository
         uses: actions/checkout@v4
@@ -94,3 +84,14 @@ jobs:
           git add .
           git commit -m "Update image tags for ${{ github.sha }}"
           git push origin main
+          
+      - name: send slack message
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: Slack Noti Test
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          if_mention: failure,cancelled
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
